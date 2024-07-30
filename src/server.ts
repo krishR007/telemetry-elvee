@@ -6,9 +6,18 @@ import WebSocket, { WebSocketServer } from 'ws';
 const keyPath = '/etc/letsencrypt/live/telemetry.elvee.app/privkey.pem';
 const certPath = '/etc/letsencrypt/live/telemetry.elvee.app/fullchain.pem';
 
-// Read SSL certificate and key
-const privateKey = fs.readFileSync(keyPath, 'utf8');
-const certificate = fs.readFileSync(certPath, 'utf8');
+// Read SSL certificate and key with error handling
+let privateKey: string;
+let certificate: string;
+
+try {
+    privateKey = fs.readFileSync(keyPath, 'utf8');
+    certificate = fs.readFileSync(certPath, 'utf8');
+} catch (err) {
+    console.error('Error reading SSL certificate or key:', err);
+    process.exit(1);
+}
+
 const credentials = { key: privateKey, cert: certificate };
 
 // Create an HTTPS server
@@ -24,17 +33,21 @@ const wss = new WebSocketServer({ server });
 wss.on('connection', (ws: WebSocket) => {
     console.log('A new client connected!');
 
-    ws.on('message', (message: WebSocket.MessageEvent) => {
-        console.log(`Received message => ${message}`);
-        ws.send(`Server received: ${message}`);
+    ws.on('message', (message: WebSocket.RawData) => {
+        const messageStr = message.toString();
+        console.log(`Received message => ${messageStr}`);
+        ws.send(`Server received: ${messageStr}`);
     });
 
     ws.on('close', () => {
         console.log('Client disconnected');
     });
+
+    ws.on('error', (err) => {
+        console.error('WebSocket error:', err);
+    });
 });
 
-// Start the server on port 443
 const PORT = 8080;
 server.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);
