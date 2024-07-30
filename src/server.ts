@@ -10,6 +10,28 @@ const server = http.createServer((req, res) => {
 // Create a WebSocket server
 const wss = new WebSocketServer({ server });
 
+// Function to decode binary data
+function decodeBinaryData(buffer) {
+    let offset = 0;
+
+    // Read a 32-bit integer (4 bytes)
+    const int32 = buffer.readInt32BE(offset);
+    offset += 4;
+
+    // Read a 64-bit float (8 bytes)
+    const float64 = buffer.readDoubleBE(offset);
+    offset += 8;
+
+    // Read the remaining bytes as a UTF-8 encoded string
+    const string = buffer.toString('utf8', offset);
+
+    return {
+        int32,
+        float64,
+        string
+    };
+}
+
 // Handle WebSocket connections
 wss.on('connection', (ws: WebSocket) => {
     console.log('A new client connected!');
@@ -30,12 +52,11 @@ wss.on('connection', (ws: WebSocket) => {
         } else if (message instanceof Buffer) {
             // Handle binary message
             console.log('Received binary message');
-            // If you know the binary format, decode it here
-            // For now, just log the binary data as is
-            console.log(message);
+            const decodedData = decodeBinaryData(message);
+            console.log(`Decoded data => ${JSON.stringify(decodedData)}`);
 
-            // Send an acknowledgment to the client
-            ws.send('Server received binary data');
+            // Send an acknowledgment to the client with the decoded data
+            ws.send(JSON.stringify({ message: 'Server received binary data', data: decodedData }));
         }
     });
 
