@@ -1,18 +1,10 @@
 import WebSocket, { WebSocketServer } from 'ws';
-import https from 'https';
-import fs from 'fs';
+import http from 'http';
 
-// SSL certificate and key files
-const options = {
-    cert: fs.readFileSync('certs/0000_cert.pem'),
-    key: fs.readFileSync('certs/privkey.pem'),
-    ca: fs.readFileSync('certs/0001_chain.pem')
-};
-
-// Create an HTTPS server
-const server = https.createServer(options, (req, res) => {
+// Create an HTTP server
+const server = http.createServer((req, res) => {
     res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.end('WebSocket server is running with SSL\n');
+    res.end('WebSocket server is running\n');
 });
 
 // Create a WebSocket server
