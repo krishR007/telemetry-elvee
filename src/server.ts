@@ -1,6 +1,6 @@
 import fs from 'fs';
 import https from 'https';
-import WebSocket, { WebSocketServer } from 'ws';
+import WebSocket, {WebSocketServer} from 'ws';
 
 // Paths to your SSL certificate and key
 const keyPath = '/etc/letsencrypt/live/telemetry.elvee.app/privkey.pem';
@@ -9,7 +9,8 @@ const certPath = '/etc/letsencrypt/live/telemetry.elvee.app/fullchain.pem';
 // Read SSL certificate and key with error handling
 let privateKey: string;
 let certificate: string;
-
+console.log(fs.readFileSync(keyPath, 'utf8'));
+console.log(fs.readFileSync(certPath, 'utf8'));
 try {
     privateKey = fs.readFileSync(keyPath, 'utf8');
     certificate = fs.readFileSync(certPath, 'utf8');
@@ -18,16 +19,16 @@ try {
     process.exit(1);
 }
 
-const credentials = { key: privateKey, cert: certificate };
+const credentials = {key: privateKey, cert: certificate};
 
 // Create an HTTPS server
 const server = https.createServer(credentials, (req, res) => {
-    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.writeHead(200, {'Content-Type': 'text/plain'});
     res.end('WebSocket server is running over HTTPS\n');
 });
 
 // Create a WebSocket server
-const wss = new WebSocketServer({ server });
+const wss = new WebSocketServer({server});
 
 // Handle WebSocket connections
 wss.on('connection', (ws: WebSocket) => {
