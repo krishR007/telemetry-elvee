@@ -16,7 +16,12 @@ wss.on('connection', (ws: WebSocket) => {
 
     ws.on('message', (message: WebSocket.Data) => {
         console.log(`Message type is ${typeof message}`);
-        if (typeof message === 'string') {
+        if (message instanceof String) {
+            // console.log(`Received message => ${message}`);
+            console.log(`String type data is ${message}`);
+            // ws.send(message);
+
+        } else if (message instanceof Object) {
             // console.log(`Received message => ${message}`);
             console.log(`String type data is ${message}`);
             // ws.send(message);
