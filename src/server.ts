@@ -15,17 +15,16 @@ wss.on('connection', (ws: WebSocket) => {
     console.log('A new client connected!');
 
     ws.on('message', (message: WebSocket.Data) => {
+        console.log(`Message type is ${typeof message}`);
         if (typeof message === 'string') {
             // console.log(`Received message => ${message}`);
-
+            console.log(`String type data is ${message}`);
             // ws.send(message);
 
         } else if (message instanceof Buffer) {
-            var base64data = Buffer.from(message).toString('base64');
-            console.log(base64data);
-            var originaldata = Buffer.from(base64data, 'base64');
-            console.log(originaldata.toString());
-            ws.send(message);
+            // var base64data = Buffer.from(message).toString('base64');
+            // console.log(base64data);
+            // ws.send(message);
         }
     });
 
