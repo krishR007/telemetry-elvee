@@ -16,15 +16,14 @@ wss.on('connection', (ws: WebSocket) => {
 
     ws.on('message', (message: WebSocket.Data) => {
         if (typeof message === 'string') {
-            console.log(`Received message => ${message}`);
+            // console.log(`Received message => ${message}`);
 
-            ws.send(message);
+            // ws.send(message);
 
         } else if (message instanceof Buffer) {
             var base64data = Buffer.from(message).toString('base64');
             console.log(base64data);
             var originaldata = Buffer.from(base64data, 'base64');
-            console.log(originaldata);
             console.log(originaldata.toString());
             ws.send(message);
         }
