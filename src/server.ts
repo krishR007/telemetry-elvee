@@ -16,19 +16,17 @@ wss.on('connection', (ws: WebSocket) => {
 
     ws.on('message', (message: WebSocket.Data) => {
         if (typeof message === 'string') {
-            // Handle text message
-            try {
-                const data = JSON.parse(message);
-                console.log(`Received message => ${JSON.stringify(data)}`);
+            console.log(`Received message => ${message}`);
 
-                const response = {message: `Server received: ${data}`};
-                ws.send(JSON.stringify(response));
-            } catch (error) {
-                console.error('Error parsing JSON:', error);
-                ws.send(JSON.stringify({error: 'Invalid JSON'}));
-            }
+            ws.send(message);
+
         } else if (message instanceof Buffer) {
-            console.log(message)
+            var base64data = Buffer.from(message).toString('base64');
+            console.log(base64data);
+            var originaldata = Buffer.from(base64data, 'base64');
+            console.log(originaldata);
+            console.log(originaldata.toString());
+            ws.send(message);
         }
     });
 
