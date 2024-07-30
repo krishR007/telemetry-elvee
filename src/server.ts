@@ -35,7 +35,7 @@ wss.on('connection', (ws: WebSocket) => {
 });
 
 // Start the server on port 443
-const PORT = 443;
+const PORT = 8080;
 server.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);
 });
