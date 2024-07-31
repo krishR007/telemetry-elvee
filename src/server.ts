@@ -5,9 +5,9 @@ import WebSocket, {WebSocketServer} from 'ws';
 
 // Load server certificates
 const serverOptions: https.ServerOptions = {
-    key: fs.readFileSync(path.join(__dirname, '/etc/letsencrypt/live/telemetry.elvee.app/privkey.pem')),
-    cert: fs.readFileSync(path.join(__dirname, '/etc/letsencrypt/live/telemetry.elvee.app/cert.pem')),
-    ca: fs.readFileSync(path.join(__dirname, '/etc/letsencrypt/live/telemetry.elvee.app/fullchain.pem')),
+    key: fs.readFileSync('/etc/letsencrypt/live/telemetry.elvee.app/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/telemetry.elvee.app/cert.pem'),
+    ca: fs.readFileSync('/etc/letsencrypt/live/telemetry.elvee.app/fullchain.pem'),
     requestCert: true,
     rejectUnauthorized: true,
 };
