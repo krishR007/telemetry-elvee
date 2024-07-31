@@ -1,28 +1,36 @@
-import WebSocket, {WebSocketServer} from 'ws';
+import WebSocket, { WebSocketServer } from 'ws';
 import http from 'http';
 
 // Create an HTTP server
 const server = http.createServer((req, res) => {
-    res.writeHead(200, {'Content-Type': 'application/json'});
-    res.end(JSON.stringify({message: 'WebSocket server is running'}));
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ message: 'WebSocket server is running' }));
 });
 
 // Create a WebSocket server
-const wss = new WebSocketServer({server});
+const wss = new WebSocketServer({ server });
 
 // Handle WebSocket connections
 wss.on('connection', (ws: WebSocket) => {
     console.log('A new client connected!');
 
     ws.on('message', (data: WebSocket.RawData, isBinary: boolean) => {
-        console.log(`Hello -> ${data.toString()}`)
-        console.log(data)
+        if (isBinary) {
+            console.log('Received binary data');
+            console.log(data);
+        } else {
+            console.log('Received text data');
+            console.log(`Hello -> ${data.toString()}`); // Handle text data
+        }
+    });
+
+    ws.on('error', (error) => {
+        console.error('WebSocket error:', error);
     });
 
     ws.on('close', () => {
         console.log('Client disconnected');
     });
-
 });
 
 // Start the server
