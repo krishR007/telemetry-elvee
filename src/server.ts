@@ -1,54 +1,31 @@
-import * as fs from 'fs';
-import * as https from 'https';
-import * as WebSocket from 'ws';
-import {IncomingMessage} from 'http';
-import {TLSSocket} from 'tls'; // Import TLSSocket from 'tls'
+import WebSocket, {WebSocketServer} from 'ws';
+import http from 'http';
 
-// Paths to your certificates
-const serverKey = fs.readFileSync('/etc/letsencrypt/live/telemetry.elvee.app/privkey.pem');
-const serverCert = fs.readFileSync('/etc/letsencrypt/live/telemetry.elvee.app/cert.pem');
-console.log(serverCert)
-console.log(serverKey)
-// HTTPS server options
-const serverOptions = {
-    key: serverKey,
-    cert: serverCert,
-    requestCert: true, // Request client certificates
-    rejectUnauthorized: true, // Reject unauthorized clients
-};
-
-// Create an HTTPS server
-const httpsServer = https.createServer(serverOptions, (req, res) => {
-    res.writeHead(200);
-    res.end('hello world\n');
+// Create an HTTP server
+const server = http.createServer((req, res) => {
+    res.writeHead(200, {'Content-Type': 'application/json'});
+    res.end(JSON.stringify({message: 'WebSocket server is running'}));
 });
 
-// Create a WebSocket server that uses the HTTPS server
-const wss = new WebSocket.Server({server: httpsServer});
+// Create a WebSocket server
+const wss = new WebSocketServer({server});
 
-wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {
-    // Cast the socket to TLSSocket
-    const tlsSocket = req.socket as TLSSocket;
+// Handle WebSocket connections
+wss.on('connection', (ws: WebSocket) => {
+    console.log('A new client connected!');
 
-    // Check if the client provided a certificate
-    const clientCert = tlsSocket.getPeerCertificate();
-
-    if (!clientCert || !clientCert.subject) {
-        ws.close();
-        console.error('Client certificate is required.');
-        return;
-    }
-
-    console.log('Client connected');
-
-    ws.on('message', (message: WebSocket.MessageEvent) => {
-        console.log(`Received message: ${message}`);
+    ws.on('message', (data: WebSocket.RawData, isBinary: boolean) => {
+        console.log(data)
+        console.log(isBinary)
     });
 
-    ws.send('Hello from server');
+    ws.on('close', () => {
+        console.log('Client disconnected');
+    });
 });
 
-// Start the HTTPS server
-httpsServer.listen(8080, () => {
-    console.log('WebSocket server is running on wss://localhost:8080');
+// Start the server
+const PORT = 8080;
+server.listen(PORT, () => {
+    console.log(`Server is listening on port ${PORT}`);
 });
