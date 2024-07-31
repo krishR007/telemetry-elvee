@@ -15,7 +15,8 @@ wss.on('connection', (ws: WebSocket) => {
     console.log('A new client connected!');
 
     ws.on('message', (data: WebSocket.RawData, isBinary: boolean) => {
-        console.log(JSON.parse(data.toString()))
+        console.log(`Hello -> ${data.toString()}`)
+        console.log(data)
     });
 
     ws.on('close', () => {
