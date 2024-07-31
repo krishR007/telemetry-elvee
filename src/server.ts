@@ -15,13 +15,13 @@ wss.on('connection', (ws: WebSocket) => {
     console.log('A new client connected!');
 
     ws.on('message', (data: WebSocket.RawData, isBinary: boolean) => {
-        console.log(data.toString())
-        console.log(isBinary)
+        console.log(JSON.parse(data.toString()))
     });
 
     ws.on('close', () => {
         console.log('Client disconnected');
     });
+
 });
 
 // Start the server
