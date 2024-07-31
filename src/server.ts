@@ -15,7 +15,10 @@ wss.on('connection', (ws: WebSocket) => {
     console.log('A new client connected!');
 
     ws.on('message', (data: WebSocket.RawData, isBinary: boolean) => {
-        console.log(data.toString());
+        if (Buffer.isBuffer(data)) {
+            const dataString = data.toString('utf-8');
+            console.log(dataString);
+        }
     });
 
 
