@@ -7,7 +7,8 @@ import {TLSSocket} from 'tls'; // Import TLSSocket from 'tls'
 // Paths to your certificates
 const serverKey = fs.readFileSync('/etc/letsencrypt/live/telemetry.elvee.app/privkey.pem');
 const serverCert = fs.readFileSync('/etc/letsencrypt/live/telemetry.elvee.app/cert.pem');
-
+console.log(serverCert)
+console.log(serverKey)
 // HTTPS server options
 const serverOptions = {
     key: serverKey,
