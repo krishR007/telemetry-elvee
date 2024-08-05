@@ -1,4 +1,4 @@
-import WebSocket, { WebSocketServer } from 'ws';
+import WebSocket, {WebSocketServer} from 'ws';
 import http from 'http';
 
 // Create an HTTP server
@@ -14,25 +14,7 @@ wss.on('connection', (ws: WebSocket) => {
     let dataBuffer: string = '';
 
     ws.on('message', (data: WebSocket.RawData, isBinary: boolean) => {
-        if (Buffer.isBuffer(data)) {
-            const dataString = data.toString('utf-8');
-            dataBuffer += dataString;
-
-            try {
-                const jsonData = JSON.parse(dataBuffer);
-                console.log('Received JSON data:', jsonData);
-
-                // Example response
-                const response = { status: 'received', data: jsonData };
-                ws.send(JSON.stringify(response));
-
-                // Reset buffer after successful parsing
-                dataBuffer = '';
-            } catch (error) {
-                console.error('Invalid JSON or waiting for more data:', error);
-                // Continue accumulating data
-            }
-        }
+        console.log(data);
     });
 
     ws.on('error', (error) => {
