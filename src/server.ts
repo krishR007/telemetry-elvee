@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as https from 'https';
-import WebSocket, { Server as WebSocketServer } from 'ws';
+import WebSocket from 'ws';
 
 // Define your configuration object
 const config = {
@@ -14,7 +14,7 @@ const server = https.createServer({
     key: fs.readFileSync(config.ssl_key_path)
 });
 
-const wss = new WebSocketServer({ server });
+const wss = new WebSocket.Server({ server });
 
 wss.on('connection', (ws: WebSocket) => {
     console.log('New WebSocket connection');
