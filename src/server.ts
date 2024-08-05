@@ -14,7 +14,7 @@ wss.on('connection', (ws: WebSocket) => {
     let dataBuffer: string = '';
 
     ws.on('message', (data: WebSocket.RawData, isBinary: boolean) => {
-        console.log(data);
+        console.log(data.toString());
     });
 
     ws.on('error', (error) => {
