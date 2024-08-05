@@ -1,31 +1,37 @@
-import WebSocket, {WebSocketServer} from 'ws';
-import http from 'http';
+import * as fs from 'fs';
+import * as https from 'https';
+import WebSocket, { Server as WebSocketServer } from 'ws';
 
-// Create an HTTP server
-const server = http.createServer();
+// Define your configuration object
+const config = {
+    ssl_cert_path: '/etc/letsencrypt/live/telemetry.elvee.app/cert.pem',
+    ssl_key_path: '/etc/letsencrypt/live/telemetry.elvee.app/privkey.pem',
+    port: 8080
+};
 
-// Create a WebSocket server
-const wss = new WebSocketServer({server});
+const server = https.createServer({
+    cert: fs.readFileSync(config.ssl_cert_path),
+    key: fs.readFileSync(config.ssl_key_path)
+});
 
-// Handle WebSocket connections
+const wss = new WebSocketServer({ server });
+
 wss.on('connection', (ws: WebSocket) => {
-    console.log('A new client connected!');
+    console.log('New WebSocket connection');
 
-    ws.on('message', (data: WebSocket.RawData, isBinary: boolean) => {
-        console.log(data);
+    // Handle incoming messages
+    ws.on('message', (message: string) => {
+        console.log(`Received message: ${message}`);
+        // Echo message back to the client
+        ws.send(`Received: ${message}`);
     });
 
-    ws.on('error', (error) => {
-        console.error('WebSocket error:', error);
-    });
-
+    // Handle connection close
     ws.on('close', () => {
-        console.log('Client disconnected');
+        console.log('WebSocket connection closed');
     });
 });
 
-// Start the server
-const PORT = 8080;
-server.listen(PORT, () => {
-    console.log(`Server is listening on port ${PORT}`);
+server.listen(config.port, () => {
+    console.log(`Server is listening on https://localhost:${config.port}`);
 });
