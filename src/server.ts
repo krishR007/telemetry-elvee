@@ -14,7 +14,13 @@ const server = https.createServer({
     key: fs.readFileSync(config.ssl_key_path)
 });
 
-const wss = new WebSocket.Server({ server });
+const wss = new WebSocket.Server({
+    server, verifyClient: (info, cb) => {
+        const origin = info.origin;
+        // Validate origin here
+        cb(true);
+    }
+});
 
 wss.on('connection', (ws: WebSocket) => {
     console.log('New WebSocket connection');
