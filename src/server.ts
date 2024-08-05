@@ -1,37 +1,38 @@
-import * as https from 'http';
+import http from 'http';
+import {Server} from 'socket.io';
 import WebSocket from 'ws';
 
-// Define your configuration object
-const config = {
-    port: 8080
-};
+// Create an HTTP server
+const httpServer = http.createServer();
 
-const server = https.createServer();
-
-const wss = new WebSocket.Server({
-    server, verifyClient: (info, cb) => {
-        const origin = info.origin;
-        // Validate origin here
-        cb(true);
+// Create a Socket.IO server
+const io = new Server(httpServer, {
+    cors: {
+        origin: "*", // You might want to restrict this in a production environment
     }
 });
 
-wss.on('connection', (ws: WebSocket) => {
-    console.log('New WebSocket connection');
+// Handle connection event
+io.on('connection', (socket) => {
+    console.log('A client connected');
 
-    // Handle incoming messages
-    ws.on('message', (message: string) => {
-        console.log(`Received message: ${message}`);
-        // Echo message back to the client
-        ws.send(`Received: ${message}`);
+    // Handle custom events
+    socket.on('customEvent', (data) => {
+        console.log('Received custom event with data:', data);
     });
 
-    // Handle connection close
-    ws.on('close', () => {
-        console.log('WebSocket connection closed');
+    // Handle disconnection event
+    socket.on('disconnect', () => {
+        console.log('A client disconnected');
+    });
+
+    // Handle errors
+    socket.on('error', (error) => {
+        console.error('Socket error:', error);
     });
 });
 
-server.listen(config.port, () => {
-    console.log(`Server is listening on https://localhost:${config.port}`);
+// Start listening on port 8080
+httpServer.listen(8080, () => {
+    console.log('Server is listening on port 8080');
 });
