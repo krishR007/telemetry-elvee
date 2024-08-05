@@ -1,6 +1,6 @@
 import http from 'http';
 import {Server} from 'socket.io';
-import WebSocket from 'ws';
+import {io as ClientSocketIO} from 'socket.io-client';
 
 // Create an HTTP server
 const httpServer = http.createServer();
@@ -30,6 +30,25 @@ io.on('connection', (socket) => {
     socket.on('error', (error) => {
         console.error('Socket error:', error);
     });
+});
+
+// Connect to the Socket.IO server
+const clientSocket = ClientSocketIO('https://telemetry.elvee.app');
+
+clientSocket.on('connect', () => {
+    console.log('Connected to Socket.IO server');
+});
+
+clientSocket.on('message', (data) => {
+    console.log('Received message from Socket.IO server:', data);
+});
+
+clientSocket.on('disconnect', () => {
+    console.log('Disconnected from Socket.IO server');
+});
+
+clientSocket.on('error', (error) => {
+    console.error('Socket.IO client error:', error);
 });
 
 // Start listening on port 8080
