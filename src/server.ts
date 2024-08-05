@@ -1,18 +1,12 @@
-import * as fs from 'fs';
 import * as https from 'https';
 import WebSocket from 'ws';
 
 // Define your configuration object
 const config = {
-    ssl_cert_path: '/etc/letsencrypt/live/telemetry.elvee.app/cert.pem',
-    ssl_key_path: '/etc/letsencrypt/live/telemetry.elvee.app/privkey.pem',
     port: 8080
 };
 
-const server = https.createServer({
-    cert: fs.readFileSync(config.ssl_cert_path),
-    key: fs.readFileSync(config.ssl_key_path)
-});
+const server = https.createServer();
 
 const wss = new WebSocket.Server({
     server, verifyClient: (info, cb) => {
