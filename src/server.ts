@@ -11,10 +11,8 @@ const wss = new WebSocketServer({server});
 wss.on('connection', (ws: WebSocket) => {
     console.log('A new client connected!');
 
-    let dataBuffer: string = '';
-
     ws.on('message', (data: WebSocket.RawData, isBinary: boolean) => {
-        console.log(data.toString());
+        console.log(data);
     });
 
     ws.on('error', (error) => {
