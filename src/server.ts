@@ -1,4 +1,4 @@
-import * as https from 'https';
+import * as https from 'http';
 import WebSocket from 'ws';
 
 // Define your configuration object
