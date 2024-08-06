@@ -13,24 +13,25 @@ wss.on('connection', (ws: WebSocket) => {
     console.log('A new client connected!');
 
     ws.on('message', (data: WebSocket.RawData, isBinary: boolean) => {
-        if (isBinary) {
-            console.log("ArrayBuffer Type")
-            const view = new DataView(data as ArrayBuffer);
-            console.log(view.getInt32(0));
-        } else {
-            // text frame
-            console.log(data);
+        console.log("rowData", data)
+
+        if (data instanceof ArrayBuffer) console.log("Array Buffer")
+        if (data instanceof Buffer) {
+            const utf16Decoder = new TextDecoder('UTF8')
+            console.log(utf16Decoder.decode(data))
+            console.log("Buffer")
+            const blob = new Blob([data], {type: 'text/plain; charset=utf-8'});
+
+            blob.text().then(text => console.log(text));
         }
-        // if (isBinary) {
-        //     const enc = new TextDecoder("utf-8");
-        //     const arr = new Uint8Array(data);
-        //     console.log(data);
-        //     console.log(isBinary);
-        //     console.log(arr);
-        //     console.log(enc.decode(arr));
-        // } else {
-        //     console.log("Not binary")
-        // }
+        if (Array.isArray(data)) {
+            data.forEach(value => {
+                const utf16Decoder = new TextDecoder('UTF8')
+                console.log(utf16Decoder.decode(value))
+            })
+        }
+
+
     });
 
 
