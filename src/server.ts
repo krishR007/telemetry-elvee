@@ -18,6 +18,7 @@ wss.on('connection', (ws: WebSocket) => {
 
         if (data instanceof ArrayBuffer) console.log("Array Buffer")
         if (data instanceof Buffer) {
+            console.log(Buffer.from(data))
             console.log(Buffer.from(data).toJSON())
 
             const utf16Decoder = new TextDecoder('UTF8')
