@@ -19,6 +19,7 @@ wss.on('connection', (ws: WebSocket) => {
             const arr = new Uint8Array(data);
             console.log(data);
             console.log(isBinary);
+            console.log(arr);
             console.log(enc.decode(arr));
         } else {
             console.log("Not binary")
