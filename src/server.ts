@@ -1,6 +1,6 @@
 import WebSocket, {WebSocketServer} from 'ws';
 import http from 'http';
-import  * as zlib from 'zlib';
+import * as zlib from 'zlib';
 
 const server = http.createServer((req, res) => {
     console.log(req);
@@ -18,21 +18,8 @@ wss.on('connection', (ws: WebSocket) => {
 
         if (data instanceof ArrayBuffer) console.log("Array Buffer")
         if (data instanceof Buffer) {
-            zlib.inflate(data, (err, decompressedBuffer) => {
-                if (err) {
-                    console.error('Error decompressing buffer:', err);
-                    return;
-                }
+            console.log(data)
 
-                const jsonString = decompressedBuffer.toString();
-
-                try {
-                    const originalData = JSON.parse(jsonString);
-                    console.log(originalData);
-                } catch (error) {
-                    console.error('Error parsing JSON:', error);
-                }
-            });
             const utf16Decoder = new TextDecoder('UTF8')
             console.log(utf16Decoder.decode(data))
             console.log("Buffer")
