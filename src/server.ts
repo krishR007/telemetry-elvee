@@ -29,12 +29,13 @@ wss.on('connection', (ws: WebSocket) => {
     console.log('A new client connected!');
 
     ws.on('message', (data: WebSocket.RawData, isBinary: boolean) => {
-        if (isBinary) {
-            const buffer = Buffer.from(data as ArrayBuffer);
-            decodeBinaryMessage(buffer);
+        if (data instanceof ArrayBuffer) {
+            // binary frame
+            const view = new DataView(data);
+            console.log(view.getInt32(0));
         } else {
-            const message = data.toString();
-            console.log('Received text message:', message);
+            // text frame
+            console.log(data);
         }
         // if (isBinary) {
         //     const enc = new TextDecoder("utf-8");
