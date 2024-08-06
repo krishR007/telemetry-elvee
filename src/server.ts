@@ -30,7 +30,7 @@ wss.on('connection', (ws: WebSocket) => {
 
     ws.on('message', (data: WebSocket.RawData, isBinary: boolean) => {
         if (data instanceof ArrayBuffer) {
-            // binary frame
+            console.log("ArrayBuffer Type")
             const view = new DataView(data);
             console.log(view.getInt32(0));
         } else {
