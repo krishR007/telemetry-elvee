@@ -12,18 +12,18 @@ const wss = new WebSocketServer({server});
 wss.on('connection', (ws: WebSocket) => {
     console.log('A new client connected!');
 
-    ws.on('message', (data: any, isBinary: boolean) => {
+    ws.on('message', (data: WebSocket.RawData, isBinary: boolean) => {
         console.log(typeof data)
-        if (isBinary) {
-            const enc = new TextDecoder("utf-8");
-            const arr = new Uint8Array(data);
-            console.log(data);
-            console.log(isBinary);
-            console.log(arr);
-            console.log(enc.decode(arr));
-        } else {
-            console.log("Not binary")
-        }
+        // if (isBinary) {
+        //     const enc = new TextDecoder("utf-8");
+        //     const arr = new Uint8Array(data);
+        //     console.log(data);
+        //     console.log(isBinary);
+        //     console.log(arr);
+        //     console.log(enc.decode(arr));
+        // } else {
+        //     console.log("Not binary")
+        // }
     });
 
 
