@@ -23,8 +23,7 @@ wss.on('connection', (ws: WebSocket) => {
 
             const jsonString = buff.toString();
 
-            const originalData = JSON.parse(jsonString);
-            console.log(originalData)
+            console.log(jsonString)
 
             // const utf16Decoder = new TextDecoder('UTF8')
             // console.log(utf16Decoder.decode(data))
