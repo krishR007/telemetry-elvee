@@ -29,9 +29,9 @@ wss.on('connection', (ws: WebSocket) => {
     console.log('A new client connected!');
 
     ws.on('message', (data: WebSocket.RawData, isBinary: boolean) => {
-        if (data instanceof ArrayBuffer) {
+        if (isBinary) {
             console.log("ArrayBuffer Type")
-            const view = new DataView(data);
+            const view = new DataView(data as ArrayBuffer);
             console.log(view.getInt32(0));
         } else {
             // text frame
