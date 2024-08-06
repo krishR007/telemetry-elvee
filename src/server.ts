@@ -18,15 +18,20 @@ wss.on('connection', (ws: WebSocket) => {
 
         if (data instanceof ArrayBuffer) console.log("Array Buffer")
         if (data instanceof Buffer) {
-            console.log(Buffer.from(data))
-            console.log(Buffer.from(data).toJSON())
 
-            const utf16Decoder = new TextDecoder('UTF8')
-            console.log(utf16Decoder.decode(data))
-            console.log("Buffer")
-            const blob = new Blob([data], {type: 'text/plain; charset=utf-8'});
+            const buff = Buffer.from(Buffer.from(data).toJSON().data);
 
-            blob.text().then(text => console.log(text));
+            const jsonString = buff.toString();
+
+            const originalData = JSON.parse(jsonString);
+            console.log(originalData)
+
+            // const utf16Decoder = new TextDecoder('UTF8')
+            // console.log(utf16Decoder.decode(data))
+            // console.log("Buffer")
+            // const blob = new Blob([data], {type: 'text/plain; charset=utf-8'});
+            //
+            // blob.text().then(text => console.log(text));
         }
         if (Array.isArray(data)) {
             data.forEach(value => {
