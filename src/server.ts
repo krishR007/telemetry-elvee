@@ -9,13 +9,33 @@ const server = http.createServer((req, res) => {
 
 const wss = new WebSocketServer({server});
 
+function decodeBinaryMessage(buffer: Buffer): void {
+    // Example structure: 4 bytes (uint32), 2 bytes (uint16), 1 byte (uint8)
+    const firstField = buffer.readUInt32LE(0); // Read 4 bytes from offset 0
+    const secondField = buffer.readUInt16LE(4); // Read 2 bytes from offset 4
+    const thirdField = buffer.readUInt8(6); // Read 1 byte from offset 6
+
+    // Assuming more fields if necessary, adjust the offsets accordingly
+
+    // Print the decoded values
+    console.log('First Field:', firstField);
+    console.log('Second Field:', secondField);
+    console.log('Third Field:', thirdField);
+
+    // Add more decoding logic based on your data structure
+}
+
 wss.on('connection', (ws: WebSocket) => {
     console.log('A new client connected!');
 
     ws.on('message', (data: WebSocket.RawData, isBinary: boolean) => {
-        console.log(isBinary);
-        console.log(data);
-        console.log(typeof data);
+        if (isBinary) {
+            const buffer = Buffer.from(data as ArrayBuffer);
+            decodeBinaryMessage(buffer);
+        } else {
+            const message = data.toString();
+            console.log('Received text message:', message);
+        }
         // if (isBinary) {
         //     const enc = new TextDecoder("utf-8");
         //     const arr = new Uint8Array(data);
@@ -37,7 +57,6 @@ wss.on('connection', (ws: WebSocket) => {
         console.log('Client disconnected');
     });
 });
-
 
 // Start the server
 const PORT = 8080;
