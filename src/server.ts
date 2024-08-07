@@ -1,59 +1,42 @@
-import WebSocket, {WebSocketServer} from 'ws';
-import http from 'http';
-import * as zlib from 'zlib';
+import * as WebSocket from 'ws';
+import * as https from 'https';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 
-const server = http.createServer((req, res) => {
-    console.log(req);
-    // res.writeHead(200, {'Content-Type': 'application/json'});
-    res.end(JSON.stringify({message: 'WebSocket server is running'}));
+// Load the CA certificate
+const ca = fs.readFileSync('/home/ubuntu/telemetry/certs/0001_chain.pem');
+
+// Create an HTTPS agent with the CA certificate
+const agent = new https.Agent({
+    ca: ca,
 });
 
-const wss = new WebSocketServer({server});
+// WebSocket URL
+const wsUrl = 'wss://telemetry.elvee.app';
 
-wss.on('connection', (ws: WebSocket) => {
-    console.log('A new client connected!');
-
-    ws.on('message', (data: WebSocket.RawData, isBinary: boolean) => {
-        console.log("rowData", data)
-
-        if (data instanceof ArrayBuffer) console.log("Array Buffer")
-        if (data instanceof Buffer) {
-
-            const buff = Buffer.from(Buffer.from(data).toJSON().data);
-
-            const jsonString = buff.toString();
-
-            console.log(jsonString)
-
-            // const utf16Decoder = new TextDecoder('UTF8')
-            // console.log(utf16Decoder.decode(data))
-            // console.log("Buffer")
-            // const blob = new Blob([data], {type: 'text/plain; charset=utf-8'});
-            //
-            // blob.text().then(text => console.log(text));
-        }
-        if (Array.isArray(data)) {
-            data.forEach(value => {
-                const utf16Decoder = new TextDecoder('UTF8')
-                console.log(utf16Decoder.decode(value))
-            })
-        }
-
-
-    });
-
-
-    ws.on('error', (error) => {
-        console.error('WebSocket error:', error);
-    });
-
-    ws.on('close', () => {
-        console.log('Client disconnected');
-    });
+// Create WebSocket client with custom agent
+const ws = new WebSocket(wsUrl, {
+    agent: agent,
 });
 
-// Start the server
-const PORT = 8080;
-server.listen(PORT, () => {
-    console.log(`Server is listening on port ${PORT}`);
+// Event listener for connection open
+ws.on('open', () => {
+    console.log('Connected to WebSocket server');
+    // Send a message to the server
+    ws.send('Hello from client');
+});
+
+// Event listener for receiving messages
+ws.on('message', (data) => {
+    console.log('Received message:', data.toString());
+});
+
+// Event listener for errors
+ws.on('error', (error) => {
+    console.error('WebSocket error:', error);
+});
+
+// Event listener for connection close
+ws.on('close', () => {
+    console.log('Connection closed');
 });
